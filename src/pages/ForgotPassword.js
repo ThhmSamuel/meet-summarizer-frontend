@@ -9,16 +9,19 @@ import {
   Button,
   Paper,
   Alert,
-  InputAdornment
+  InputAdornment,
+  CircularProgress
 } from '@mui/material';
 import {
   Email as EmailIcon,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
+import { forgotPassword } from '../api/authApi';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
   const validateEmail = (email) => {
@@ -41,10 +44,18 @@ const ForgotPassword = () => {
     
     // Clear errors
     setError('');
+    setLoading(true);
     
-    // In a real implementation, you would call an API endpoint to send a reset email
-    // For this example, we'll just simulate a successful submission
-    setIsSubmitted(true);
+    try {
+      // Send forgot password request
+      await forgotPassword(email);
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error('Forgot password error:', err);
+      setError(err.response?.data?.error || 'Failed to send reset email. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
   
   return (
@@ -88,6 +99,7 @@ const ForgotPassword = () => {
                   autoFocus
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -102,8 +114,13 @@ const ForgotPassword = () => {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2, py: 1.5 }}
+                  disabled={loading}
                 >
-                  Send Reset Link
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    'Send Reset Link'
+                  )}
                 </Button>
               </Box>
             </>
@@ -113,6 +130,7 @@ const ForgotPassword = () => {
               sx={{ width: '100%', mb: 3 }}
             >
               If an account exists with email {email}, a password reset link has been sent.
+              Please check your email and follow the instructions to reset your password.
             </Alert>
           )}
           

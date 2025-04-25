@@ -16,6 +16,7 @@ import ViewSummary from './pages/ViewSummary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 // Context
 import { SummaryProvider } from './context/SummaryContext';
@@ -84,6 +85,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
 
                 {/* Protected routes */}
                 <Route element={<ProtectedRoute />}>
