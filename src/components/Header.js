@@ -60,7 +60,7 @@ const Header = () => {
                 fontSize: '1.5rem'
               }}
             >
-              Meeting Minutes
+              Meet Summarizer
             </Typography>
           </Box>
           

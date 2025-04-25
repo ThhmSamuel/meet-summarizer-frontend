@@ -76,7 +76,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <GoogleOAuthProvider clientId="852468241042-4krmjsrhcv6udljkc68cgoi1hl5sqdhk.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
           <SummaryProvider>
             <Router>
               <Header />
