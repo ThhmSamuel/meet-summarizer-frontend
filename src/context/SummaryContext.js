@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { getAllSummaries, getSummaryById, updateSummary, deleteSummary } from '../api/api';
+import { useAuth } from './AuthContext'; // Import Auth context
 
 // Create context
 const SummaryContext = createContext();
@@ -13,9 +14,13 @@ export const SummaryProvider = ({ children }) => {
   const [currentSummary, setCurrentSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { isAuthenticated } = useAuth(); // Get authentication state
 
-  // Fetch all summaries
+
+  // Fetch all summaries - but only when authenticated
   const fetchSummaries = async () => {
+    if (!isAuthenticated) return; // Don't fetch if not authenticated
+
     try {
       setLoading(true);
       const response = await getAllSummaries();
@@ -28,6 +33,21 @@ export const SummaryProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  // // Fetch all summaries
+  // const fetchSummaries = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await getAllSummaries();
+  //     setSummaries(response.data);
+  //     setError(null);
+  //   } catch (err) {
+  //     setError('Failed to fetch summaries');
+  //     console.error(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Fetch a single summary by ID
   const fetchSummaryById = async (id) => {
@@ -51,19 +71,19 @@ export const SummaryProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await updateSummary(id, data);
-      
+
       // Update the current summary if it's the one being edited
       if (currentSummary && currentSummary._id === id) {
         setCurrentSummary(response.data);
       }
-      
+
       // Update the summary in the list
-      setSummaries(prev => 
-        prev.map(summary => 
+      setSummaries(prev =>
+        prev.map(summary =>
           summary._id === id ? response.data : summary
         )
       );
-      
+
       setError(null);
       return response.data;
     } catch (err) {
@@ -80,15 +100,15 @@ export const SummaryProvider = ({ children }) => {
     try {
       setLoading(true);
       await deleteSummary(id);
-      
+
       // Remove the deleted summary from the list
       setSummaries(prev => prev.filter(summary => summary._id !== id));
-      
+
       // Clear the current summary if it's the one being deleted
       if (currentSummary && currentSummary._id === id) {
         setCurrentSummary(null);
       }
-      
+
       setError(null);
       return true;
     } catch (err) {
@@ -100,10 +120,16 @@ export const SummaryProvider = ({ children }) => {
     }
   };
 
-  // Load summaries on component mount
+  // Load summaries on component mount AND when auth state changes
   useEffect(() => {
-    fetchSummaries();
-  }, []);
+    if (isAuthenticated) {
+      fetchSummaries();
+    } else {
+      // Clear summaries when not authenticated
+      setSummaries([]);
+      setCurrentSummary(null);
+    }
+  }, [isAuthenticated]); // Dependency on authentication state
 
   // Context value
   const value = {
