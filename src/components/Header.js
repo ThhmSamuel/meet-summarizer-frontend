@@ -114,15 +114,6 @@ const Header = () => {
                     </Typography>
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={handleMenuClose} component={RouterLink} to="/profile">
-                    <PersonIcon fontSize="small" sx={{ mr: 1 }} />
-                    Profile
-                  </MenuItem>
-                  <MenuItem onClick={handleMenuClose} component={RouterLink} to="/settings">
-                    <SettingsIcon fontSize="small" sx={{ mr: 1 }} />
-                    Settings
-                  </MenuItem>
-                  <Divider />
                   <MenuItem onClick={handleLogout}>
                     <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
                     Sign Out
