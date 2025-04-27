@@ -205,7 +205,7 @@ const AudioUploader = () => {
               Drag & Drop or Click to Upload
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Supported formats: MP3, WAV, M4A, FLAC (Max: 50MB)
+              Supported formats: MP3, WAV, M4A, FLAC (Max: 25MB)
             </Typography>
           </Box>
         ) : (
